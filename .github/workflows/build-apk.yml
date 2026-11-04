@@ -5,18 +5,25 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
       - name: Set up JDK 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           java-version: '17'
           distribution: 'temurin'
-      - name: Make gradlew executable
+          cache: gradle
+
+      - name: Grant Execute Permission for Gradlew
         run: chmod +x gradlew
-      - name: Build Debug APK
-        run: ./gradlew assembleDebug --stacktrace
+
+      - name: Build Debug APK with Stacktrace
+        run: ./gradlew assembleDebug --stacktrace --info
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
+        if: success()
         with:
           name: app-debug
           path: app/build/outputs/apk/debug/*.apk
