@@ -15,15 +15,18 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
+      # Thay 'android' bằng tên thư mục thực tế chứa file gradlew của bạn
       - name: Grant Execute Permission for Gradlew
+        working-directory: android
         run: chmod +x gradlew
 
-      - name: Build Debug APK with Stacktrace
-        run: ./gradlew assembleDebug --stacktrace --info
+      - name: Build Debug APK
+        working-directory: android
+        run: ./gradlew assembleDebug --stacktrace
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         if: success()
         with:
           name: app-debug
-          path: app/build/outputs/apk/debug/*.apk
+          path: '**/build/outputs/apk/debug/*.apk'
